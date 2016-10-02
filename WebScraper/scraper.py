@@ -2,9 +2,9 @@ import requests
 from bs4 import BeautifulSoup
 import re
 import time
-
+import json
 #scrapy
-
+for_json = {}
 def fetchHTML(url):
     r = requests.get(url)
     code = r.status_code
@@ -12,29 +12,21 @@ def fetchHTML(url):
         print("Code failed ")
         print (str(code))
         return
-    print(url)
+    for_json["url"] = url
     return r.text
 
 def parseHTML(text):
     soup = BeautifulSoup(text)
     title = str(soup.title)[7:]
     title = title[:len(title)-8]
-    print(title)
+    for_json["name"] = title#print(title)
     genre(soup.text)
-    """
-    x = re.split("span", soup.text, 10000000)
-    length = len(x)
-    for i in range(0, length):
-        print(x[i])
-        time.sleep(1)
-    print("\n\n\n\n~~~~~~~~~~~diffffff")
-    """
     x = re.findall(" [0-9]+\.[0-9][0-9]*", soup.text)
     avg = 0.0
     for i in range(0, len(x)):
         x[i] = float(str(x[i])[1:])
         avg += x[i]
-    print(avg/len(x))
+    for_json["avgPrice"] =  avg/len(x)#print(avg/len(x))
 
 
 def genre(stuff):
@@ -43,16 +35,33 @@ def genre(stuff):
     for i in range(0, len(k)):
         temp = re.findall(k[i], stuff)
         if len(temp) != 0:
-            print(cuisine.get(k[i]))
+            for_json["category"] = cuisine.get(k[i])#print(cuisine.get(k[i]))
             return
 
 def scrape():
+    f = open("data.json", "w")
     txt = fetchHTML('http://www.zanzibarcafe.com/Loft-Lunch-Menu.html')
     parseHTML(txt)
+    f.write("{")
+    for (k,v) in for_json.items():
+        f.write(str(k)+":"+str(v))
+        f.write(",")
+    f.write("},")
     txt = fetchHTML('http://menu.rockbottom.com/la-jolla')
-    parseHTML(txt)
+    parseHTML(txt+",")
+    f.write("{")
+    for (k,v) in for_json.items():
+        f.write(str(k)+":"+str(v))
+        f.write(",")
+    f.write("},")
     txt = fetchHTML('http://www.angelosandvincis.com/menus_dinner.html')
     parseHTML(txt)
+    f.write("{")
+    for (k,v) in for_json.items():
+        f.write(str(k)+":"+str(v))
+        f.write(",")
+    f.write("}")
+    f.close()
 
 
 scrape()
