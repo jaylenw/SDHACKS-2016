@@ -43,23 +43,32 @@ def scrape():
     txt = fetchHTML('http://www.zanzibarcafe.com/Loft-Lunch-Menu.html')
     parseHTML(txt)
     f.write("{")
+    val = 0
     for (k,v) in for_json.items():
         f.write(str(k)+":"+str(v))
-        f.write(",")
+        if val != len(for_json)-1:
+            f.write(",")
+            val += 1
     f.write("},")
     txt = fetchHTML('http://menu.rockbottom.com/la-jolla')
     parseHTML(txt+",")
     f.write("{")
+    val = 0
     for (k,v) in for_json.items():
         f.write(str(k)+":"+str(v))
-        f.write(",")
+        if val != len(for_json)-1:
+            f.write(",")
+            val += 1
     f.write("},")
     txt = fetchHTML('http://www.angelosandvincis.com/menus_dinner.html')
     parseHTML(txt)
     f.write("{")
+    val = 0
     for (k,v) in for_json.items():
         f.write(str(k)+":"+str(v))
-        f.write(",")
+        if val != len(for_json)-1:
+            f.write(",")
+            val += 1
     f.write("}")
     f.close()
 
