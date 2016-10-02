@@ -30,7 +30,7 @@ def parseHTML(text):
 
 
 def genre(stuff):
-    cuisine = {"SICILLIANI":"Italian", "Brewery":"General", "Fish & Chips":"General"}
+    cuisine = {"SICILLIANI":"Italian", "Huevos":"Mexican", "ANGUS":"General", "Brewery":"General", "Fish & Chips":"General"}
     k = cuisine.keys()
     for i in range(0, len(k)):
         temp = re.findall(k[i], stuff)
@@ -61,6 +61,26 @@ def scrape():
             val += 1
     f.write("},")
     txt = fetchHTML('http://www.angelosandvincis.com/menus_dinner.html')
+    parseHTML(txt)
+    f.write("{")
+    val = 0
+    for (k,v) in for_json.items():
+        f.write(str(k)+":"+str(v))
+        if val != len(for_json)-1:
+            f.write(",")
+            val += 1
+    f.write("}")
+    txt = fetchHTML('http://www.theshoresrestaurant.com/Menus/Lunch')
+    parseHTML(txt)
+    f.write("{")
+    val = 0
+    for (k,v) in for_json.items():
+        f.write(str(k)+":"+str(v))
+        if val != len(for_json)-1:
+            f.write(",")
+            val += 1
+    f.write("}")
+    txt = fetchHTML('http://www.greatmexgrill.com/')
     parseHTML(txt)
     f.write("{")
     val = 0
